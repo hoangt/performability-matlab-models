@@ -15,7 +15,7 @@ p = my_beta.^k.*exp(-my_beta)./factorial(k);
 
 perf = my_gamma ./ t_event_faults;
 
-if (sum(my_lambda * my_tau < 1))
+if (sum(my_lambda .* my_tau >= 1) < 1)
     t_lat_avg = my_gamma / (1-my_lambda*mean(my_tau));
     perf_avg = 1 - my_lambda * mean(my_tau);
 else
