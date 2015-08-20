@@ -1,10 +1,9 @@
 max_k = 1000;
 k = [1:max_k]';
-my_tau = ones(max_k,1)*0.001;
-%my_tau = ones(max_k,1).*0.01.*log(k);
+my_tau = ones(max_k,1)*0.125;
 my_gamma = 10;
-my_lambda = 10;
-faults_allowed_during_fault_handler = 1;
+my_lambda = 1;
+faults_allowed_during_fault_handler = 0;
 
 [p, t_event_faults, percent_slowdown, t_lat_avg, percent_slowdown_avg] = performability_model(k, my_tau, my_gamma, my_lambda, faults_allowed_during_fault_handler);
 
