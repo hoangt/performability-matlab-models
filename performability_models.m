@@ -1,60 +1,62 @@
-max_k = 1000;
-k = [1:max_k]';
-my_tau = ones(max_k,1)*0.125;
+max_k = 100;
+taus = 0.125*ones(max_k,1);
 my_gamma = 10;
-my_lambda = 1;
-faults_allowed_during_fault_handler = 0;
-
-[p, t_event_faults, percent_slowdown, t_lat_avg, percent_slowdown_avg] = performability_model(k, my_tau, my_gamma, my_lambda, faults_allowed_during_fault_handler);
+my_lambda = 0.2;
+k = (0:max_k)';
+[PK, t_lats] = performability_model_iterative(max_k, taus, my_gamma, my_lambda);
+[abs_slowdowns, percent_slowdowns, t_lat_avg, abs_slowdown_avg, percent_slowdown_avg] = compute_performability_stats(PK, t_lats, my_gamma);
 
 figure(1);
 hold on;
-plot(k,my_tau);
+plot(k(2:end),taus);
 title('Required Fault Handling Time for Fault Number k');
 ylabel('Fault Handling Time (s)');
-xlabel('Fault Number k');
-legend(['mean tau = ' num2str(mean(my_tau)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda), ', faults allowed during fault handler = ' num2str(faults_allowed_during_fault_handler)]);
+xlabel('Fault Number (k)');
+legend(['mean tau = ' num2str(mean(taus)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda)]);
 hold off;
 
 figure(2);
 hold on;
-plot(k,p);
-title('Probability Mass Function for k Faults Occurring During Event Handler');
+plot(k,PK);
+title('Probability Mass Function (PMF) for k Faults Occurring During Event Handler');
 ylabel('Probability');
-xlabel('Number of Faults k');
-legend(['mean tau = ' num2str(mean(my_tau)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda), ', faults allowed during fault handler = ' num2str(faults_allowed_during_fault_handler)]);
+xlabel('Number of Faults (k)');
+legend(['mean tau = ' num2str(mean(taus)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda)]);
 hold off;
 
 figure(3);
 hold on;
-plot(t_event_faults,p);
-title('Probability Mass Function for Event Handling Time with Fault Occurrences');
+plot(t_lats,PK);
+title('Probability Mass Function (PMF) for Total Event Handling Time with Fault Occurrences');
 ylabel('Probability');
-xlabel('Event Handling Time (s)');
-legend(['mean tau = ' num2str(mean(my_tau)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda), ', faults allowed during fault handler = ' num2str(faults_allowed_during_fault_handler)]);
+xlabel('Total Event Handling Time (s)');
+legend(['mean tau = ' num2str(mean(taus)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda)]);
 hold off;
 
 figure(4);
 hold on;
-plot(percent_slowdown,p);
-title('Probability Mass Function for Percent Slowdown with Fault Occurrences');
+plot(percent_slowdowns,PK);
+title('Probability Mass Function (PMF) for Percent Slowdown with Fault Occurrences');
 ylabel('Probability');
 xlabel('Percent Slowdown');
-legend(['mean tau = ' num2str(mean(my_tau)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda), ', faults allowed during fault handler = ' num2str(faults_allowed_during_fault_handler)]);
+legend(['mean tau = ' num2str(mean(taus)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda)]);
 hold off;
 
-my_lambda_array = [1:500]';
-for i=1:size(my_lambda_array,1)
-    [tmp1, tmp2, tmp3, tmp4, tmp5] = performability_model(k, my_tau, my_gamma, my_lambda_array(i), faults_allowed_during_fault_handler);
-    percent_slowdown_avg_array(i) = tmp5;
+my_lambda_array = 0.1*(1:1000)';
+percent_slowdown_avg_array = NaN(500,1);
+parfor i=1:size(my_lambda_array,1)
+    [PK_tmp, t_lats_tmp] = performability_model_iterative(max_k, taus, my_gamma, my_lambda_array(i));
+    [abs_slowdowns_tmp, percent_slowdowns_tmp, t_lat_avg_tmp, abs_slowdown_avg_tmp, percent_slowdown_avg_tmp] = compute_performability_stats(PK_tmp, t_lats_tmp, my_gamma);
+    percent_slowdown_avg_array(i) = percent_slowdown_avg_tmp;
 end
+
 figure(5);
 hold on;
 plot(my_lambda_array,percent_slowdown_avg_array);
 title('Average Percent Slowdown vs. Average Fault Rate');
 ylabel('Average Percent Slowdown');
 xlabel('Average Fault Rate (faults/sec)');
-legend(['mean tau = ' num2str(mean(my_tau)) ', gamma = ' num2str(my_gamma) ', faults allowed during fault handler = ' num2str(faults_allowed_during_fault_handler)]);
+legend(['mean tau = ' num2str(mean(taus)) ', gamma = ' num2str(my_gamma)]);
 hold off;
 
 tilefig;

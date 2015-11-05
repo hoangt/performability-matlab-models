@@ -23,23 +23,5 @@ for i=0:max_k
     t_lats(i+1) = my_gamma + sum(taus(1:i));
 end
 
-%p = betas.^max_k.*exp(-betas)./factorial(max_k);
-%p(isnan(p))=0;
-
-%abs_slowdown = t_lats - my_gamma;
-%percent_slowdown = abs_slowdown ./ my_gamma * 100;
-
-%t_lat_avg = sum(p .* t_lats);
-%percent_slowdown_avg = (t_lat_avg - my_gamma)/my_gamma * 100;
-    
-% if (sum(my_lambda .* my_tau >= 1) < 1)
-%     
-%    % t_lat_avg = my_gamma / (1-my_lambda*mean(my_tau));
-%   %  perf_avg = 1 - my_lambda * mean(my_tau);
-% else
-%     t_lat_avg = Inf;
-%     percent_slowdown_avg = Inf;
-% end
-
 end
 
