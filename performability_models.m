@@ -1,4 +1,6 @@
-max_k = 100;
+display 'Part 1...'
+
+max_k = 300;
 taus = 0.125*ones(max_k,1);
 my_gamma = 10;
 my_lambda = 0.2;
@@ -42,7 +44,9 @@ xlabel('Percent Slowdown');
 legend(['mean tau = ' num2str(mean(taus)) ', gamma = ' num2str(my_gamma) ', lambda = ' num2str(my_lambda)]);
 hold off;
 
-my_lambda_array = 0.1*(1:1000)';
+display 'Part 2...'
+
+my_lambda_array = 0.1*(1:100)';
 percent_slowdown_avg_array = NaN(500,1);
 parfor i=1:size(my_lambda_array,1)
     [PK_tmp, t_lats_tmp] = performability_model_iterative(max_k, taus, my_gamma, my_lambda_array(i));
