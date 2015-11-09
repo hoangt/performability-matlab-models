@@ -1,9 +1,14 @@
-function [PK, t_lats] = performability_model_iterative(max_k, taus, my_gamma, my_lambda)
+function [PK, t_lats] = performability_model_iterative(max_k, taus, my_gamma, my_lambda, fault_stacking)
 
 % Compute beta_i for i in 0:max_k
 betas = NaN(max_k+1,1);
 betas(1) = my_lambda * my_gamma; % Special case for beta_0
-betas(2:max_k+1) = my_lambda * taus(1:max_k);
+
+if fault_stacking == 1
+    betas(2:max_k+1) = my_lambda * taus(1:max_k);
+else
+    betas(2:max_k+1) = 0;
+end
 
 % Initialize PK
 PK = NaN(max_k+1,1);

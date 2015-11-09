@@ -3,15 +3,14 @@ display 'Part 1...'
 % Parameters
 max_k = 200;
 taus = 0.125*ones(max_k,1);
-taus(3:end) = 0;
-taus(2) = 5;
 my_tau = mean(taus);
 my_gamma = 10;
 my_lambda = 0.2;
 k = (0:max_k)';
+fault_stacking = 0;
 
 % Performability model
-[PK, t_lats] = performability_model_iterative(max_k, taus, my_gamma, my_lambda);
+[PK, t_lats] = performability_model_iterative(max_k, taus, my_gamma, my_lambda, fault_stacking);
 
 % Compute stats
 abs_slowdowns = compute_abs_slowdowns(my_gamma, t_lats);

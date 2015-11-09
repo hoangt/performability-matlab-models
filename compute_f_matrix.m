@@ -12,25 +12,21 @@ for x=0:max_k % Sequential execution because rows of f_matrix depend on prior ro
     f_output_row = NaN(1,size(f_matrix,2));
     
     parfor y=0:max_k-x
-        if curr_beta > 1e-12; % Check for beta close to 0: if it is, then don't bother computing
-            terms = NaN(y+1,1);
-            for i=0:y
-                tmp1 = curr_beta^i / factorial(i);
-                if x-1 < 0 % base cases
-                    if y+1-i <= -(x-1)
-                        tmp2 = 1;
-                    else % y+1-i > -(x-1)
-                        tmp2 = 0;
-                    end
-                else % common case
-                    tmp2 = f_input_row((y+1-i)+1);
+        terms = NaN(y+1,1);
+        for i=0:y
+            tmp1 = curr_beta^i / factorial(i);
+            if x-1 < 0 % base cases
+                if y+1-i <= -(x-1)
+                    tmp2 = 1;
+                else % y+1-i > -(x-1)
+                    tmp2 = 0;
                 end
-                terms(i+1) = tmp1 * tmp2;
+            else % common case
+                tmp2 = f_input_row((y+1-i)+1);
             end
-            f_output_row(y+1) = sum(terms);
-        else
-            f_output_row(y+1) = 0;
+            terms(i+1) = tmp1 * tmp2;
         end
+        f_output_row(y+1) = sum(terms);
     end
     f_matrix(x+1,:) = f_output_row;
 end
