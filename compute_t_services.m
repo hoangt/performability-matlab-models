@@ -1,4 +1,4 @@
-function [PK, t_services] = compute_t_service(max_k, taus, my_gamma, my_lambda, fault_stacking)
+function [PK, t_services] = compute_t_services(max_k, taus, my_gamma, my_lambda, fault_stacking)
 
 % Compute beta_i for i in 0:max_k
 betas = NaN(max_k+1,1);

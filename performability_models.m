@@ -1,3 +1,4 @@
+%% UNIPROCESSOR/BATCH/SMI-CMCI
 display 'UNIPROCESSOR/BATCH/SMI-CMCI'
 
 % Parameters
@@ -10,7 +11,7 @@ k = (0:max_k)';
 fault_stacking = 0;
 
 % Performability model
-[PK, t_services] = compute_t_service(max_k, taus, my_gamma, my_lambda, fault_stacking);
+[PK, t_services] = compute_t_services(max_k, taus, my_gamma, my_lambda, fault_stacking);
 
 % Compute stats
 t_service_slowdowns_abs = compute_t_service_slowdowns_abs(my_gamma, t_services);
@@ -87,5 +88,37 @@ hold off;
 
 t_service_avg
 N
+
+%% UNIPROCESSOR/INTERACTIVE/SMI-CMCI
+display 'UNIPROCESSOR/INTERACTIVE/SMI-CMCI'
+% Parameters
+max_k = 200;
+taus = 0.125*ones(max_k,1);
+my_tau = mean(taus);
+my_gamma = 0.050;
+my_lambda = 1;
+k = (0:max_k)';
+fault_stacking = 0;
+my_alphas = (0:0.1:20)';
+
+
+[PK, t_services] = compute_t_services(max_k, taus, my_gamma, my_lambda, fault_stacking);
+uniprocessor_interactive_smi_cmci_t_service_avg_scen1 = compute_t_service_avg(PK, t_services);
+
+for i=1:size(my_alphas,1)
+    uniprocessor_interactive_smi_cmci_t_wait_avg_scen1_array(i) = compute_uniprocessor_interactive_smi_cmci_t_wait_avg_scen1(my_alphas(i),PK,t_services,max_k);
+    uniprocessor_interactive_smi_cmci_t_lat_avg_scen1_array(i) = uniprocessor_interactive_smi_cmci_t_wait_avg_scen1_array(i) + uniprocessor_interactive_smi_cmci_t_service_avg_scen1;
+end
+
+figure(6);
+hold on;
+plot(my_alphas(:), uniprocessor_interactive_smi_cmci_t_lat_avg_scen1_array(:));
+plot(my_alphas(:), uniprocessor_interactive_smi_cmci_t_wait_avg_scen1_array(:));
+
+title('Average Total Query Latency vs. QPS for Uniprocessor/Interactive/SMI-CMCI Scenario 1');
+ylabel('Average Total Query Latency (sec)');
+xlabel('Average Queries Per Second (queries/sec)');
+%legend(['mean tau = ' num2str(my_tau) ', gamma = ' num2str(my_gamma)]);
+hold off;
 
 tilefig;
