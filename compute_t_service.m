@@ -1,4 +1,4 @@
-function [PK, t_lats] = performability_model_iterative(max_k, taus, my_gamma, my_lambda, fault_stacking)
+function [PK, t_services] = compute_t_service(max_k, taus, my_gamma, my_lambda, fault_stacking)
 
 % Compute beta_i for i in 0:max_k
 betas = NaN(max_k+1,1);
@@ -16,14 +16,14 @@ PK = NaN(max_k+1,1);
 % Compute all f(x,y) values that can be used to find all PK values
 f_matrix = compute_f_matrix(max_k, betas);
 
-t_lats = NaN(max_k+1,1);
+t_services = NaN(max_k+1,1);
 parfor k = 0:max_k
     % Find all PK values
     prefix = exp(-sum(betas(1:k+1)));
     PK(k+1) = prefix * f_matrix(k+1,1);
     
     % Compute the event handler latency for each value of K in 0:max_k
-    t_lats(k+1) = my_gamma + sum(taus(1:k));
+    t_services(k+1) = my_gamma + sum(taus(1:k));
 end
 
 end

@@ -1,4 +1,4 @@
-function [PK, t_lats] = performability_model_recursive(max_k, taus, my_gamma, my_lambda, fault_stacking)
+function [PK, t_services] = compute_t_service_recursive(max_k, taus, my_gamma, my_lambda, fault_stacking)
 
 % Compute beta_i for i in 0:max_k
 betas = NaN(max_k+1,1);
@@ -16,13 +16,13 @@ PK = NaN(max_k+1,1);
 % Compute PK for K in k = 0:max_k using f() which is recursive
 for k = 0:max_k
    prefix = exp(-sum(betas(1:k+1)));
-   PK(k+1) = prefix * f(k,0,betas,1e-12);
+   PK(k+1) = prefix * compute_f(k,0,betas,1e-12);
 end
 
 % Compute the event handler latency for each value of K in 0:max_k
-t_lats = NaN(max_k+1,1);
+t_services = NaN(max_k+1,1);
 for i=0:max_k
-    t_lats(i+1) = my_gamma + sum(taus(1:i));
+    t_services(i+1) = my_gamma + sum(taus(1:i));
 end
 
 end
