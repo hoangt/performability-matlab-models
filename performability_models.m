@@ -5,7 +5,7 @@ display 'UNIPROCESSOR/BATCH/SMI-CMCI'
 max_k = 200;
 taus = 0.125*ones(max_k,1);
 my_tau = mean(taus);
-my_gamma = 1258;
+my_gamma = 1781;
 my_lambda = 1;
 k = (0:max_k)';
 fault_stacking = 0;
