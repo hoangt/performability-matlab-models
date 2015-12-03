@@ -3,7 +3,7 @@ display 'UNIPROCESSOR/BATCH/SMI-CMCI OR MULTIPROCESSOR/BATCH/SMI'
 
 % Parameters
 max_k = 200;
-taus = 0.135*ones(max_k,1);
+taus = 0.133*ones(max_k,1);
 my_tau = mean(taus);
 my_gamma = 1781;
 my_lambda = 1;
