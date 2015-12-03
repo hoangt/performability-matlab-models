@@ -3,7 +3,7 @@ display 'UNIPROCESSOR/BATCH/SMI-CMCI OR MULTIPROCESSOR/BATCH/SMI'
 
 % Parameters
 max_k = 200;
-taus = 0.125*ones(max_k,1);
+taus = 0.135*ones(max_k,1);
 my_tau = mean(taus);
 my_gamma = 1781;
 my_lambda = 1;
@@ -23,8 +23,10 @@ N = compute_N(PK);
 
 display 'Part 2...'
 
+%my_lambda_array = [1; 10; 20; 50; 75; 100; 150; 200; 333; 500; 750; 1000; 1500; 2000];
+%my_tau_array = (0.00020:0.00005:0.00040)';
 my_lambda_array = (0.1:0.1:10)';
-my_tau_array = (0.075:0.025:0.2)';
+my_tau_array = (0.1:0.025:0.2)';
 t_service_avg_array = NaN(size(my_lambda_array,1),size(my_tau_array,1));
 t_service_slowdown_abs_avg_array = NaN(size(my_lambda_array,1),size(my_tau_array,1));
 t_service_slowdown_prct_avg_array = NaN(size(my_lambda_array,1),size(my_tau_array,1));
@@ -78,7 +80,7 @@ hold off;
 figure(5);
 hold on;
 for t=1:size(my_tau_array,1)
-    plot(my_lambda_array(:), t_service_slowdown_prct_avg_array(:,t));
+    semilogy(my_lambda_array(:), t_service_slowdown_prct_avg_array(:,t));
 end
 title('Average Percent Slowdown vs. Average Fault Rate');
 ylabel('Average Percent Slowdown');
