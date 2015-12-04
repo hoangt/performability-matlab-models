@@ -91,6 +91,39 @@ hold off;
 t_service_avg
 N
 
+%% MULTIPROCESSOR/BATCH/CMCI
+display 'MULTIPROCESSOR/BATCH/CMCI'
+% Parameters
+max_k = 200;
+taus = 0.007*ones(max_k,1);
+my_tau = mean(taus);
+my_gamma = 1781;
+my_lambda = 1;
+k = (0:max_k)';
+fault_stacking = 0;
+cmci_scheduling_policy = 'random';
+U = 1;
+M = 4;
+S = 12;
+
+my_lambda_array = (1:1:20000)';
+%my_lambda_array = [1; 10; 20; 50; 75; 100; 150; 200; 333; 500; 750; 1000; 1500; 2000];
+%my_tau_array = (0.001:0.001:0.010)';
+my_M_array = [1;2;4];
+t_runtime_avg_array = NaN(size(my_lambda_array,1),size(my_M_array,1));
+t_runtime_avg_slowdown_abs_array = NaN(size(my_lambda_array,1),size(my_M_array,1));
+t_runtime_avg_slowdown_prct_array = NaN(size(my_lambda_array,1),size(my_M_array,1));
+
+for m=1:size(my_M_array,1)
+    for i=1:size(my_lambda_array,1)
+        t_runtime_avg_array(i,m) = compute_multiprocessor_batch_cmci_t_runtime_avg(my_gamma, my_lambda_array(i), my_tau, U, my_M_array(m), S, cmci_scheduling_policy);
+        t_runtime_avg_slowdown_abs_array(i,m) = compute_t_service_slowdown_abs_avg(my_gamma, t_runtime_avg_array(i,m));
+        t_runtime_avg_slowdown_prct_array(i,m) = compute_t_service_slowdown_prct_avg(my_gamma, t_runtime_avg_slowdown_abs_array(i,m));
+    end
+end
+
+
+
 %% UNIPROCESSOR/INTERACTIVE/SMI-CMCI
 display 'UNIPROCESSOR/INTERACTIVE/SMI-CMCI'
 
@@ -187,5 +220,7 @@ ylabel('Probability');
 xlabel('Total Latency (sec)');
 hold off;
 
+
+%% MULTIPROCESSOR/BATCH/CMCI
 
 tilefig;

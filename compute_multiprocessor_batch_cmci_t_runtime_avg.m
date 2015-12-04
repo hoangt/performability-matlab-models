@@ -1,9 +1,9 @@
-function [t_service_avg] = compute_multiprocessor_batch_cmci_t_service(my_gamma, my_lambda, my_tau_avg, U, M, S, cmci_scheduling_policy)
+function [t_runtime_avg] = compute_multiprocessor_batch_cmci_t_runtime_avg(my_gamma, my_lambda, my_tau_avg, U, M, S, cmci_scheduling_policy)
 % Ensure 0 <= U <= 1.
 % Ensure 1 <= M <= S.
 % Ensure 1 <= S.
 
-t_service_avg = NaN;
+t_runtime_avg = NaN;
 if strcmp(cmci_scheduling_policy,'random') == 1 % random CMCI issue to cores
     I = U * M * my_lambda * my_tau_avg / S;
 else
@@ -19,7 +19,10 @@ else
     end
 end
 
-t_service_avg = my_gamma * ((U*M)/(U*M-I));
+t_runtime_avg = my_gamma * ((U*M)/(U*M-I));
+if t_runtime_avg < 0
+    t_runtime_avg = Inf;
+end
 
 end
 
