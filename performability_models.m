@@ -2,13 +2,16 @@
 display 'UNIPROCESSOR/BATCH/SMI-CMCI OR MULTIPROCESSOR/BATCH/SMI'
 
 % Parameters
-max_k = 200;
-taus = 0.133*ones(max_k,1);
+max_k = 300;
+%taus = (1:1:max_k)'*0.001;
+taus = 0.025*ones(max_k,1);
+taus(51:end) = 0;
+taus(50) = 0.2;
 my_tau = mean(taus);
-my_gamma = 1781;
-my_lambda = 1;
+my_gamma = 10;
+my_lambda = 5;
 k = (0:max_k)';
-fault_stacking = 0;
+fault_stacking = 1;
 
 % Performability model
 [PK, t_services] = compute_t_services(max_k, taus, my_gamma, my_lambda, fault_stacking);
@@ -95,18 +98,18 @@ N
 display 'MULTIPROCESSOR/BATCH/CMCI'
 % Parameters
 max_k = 200;
-taus = 0.007*ones(max_k,1);
+taus = 0.00775*ones(max_k,1);
 my_tau = mean(taus);
-my_gamma = 1781;
-my_lambda = 1;
+my_gamma = 10;
+%my_lambda = 100;
 k = (0:max_k)';
-fault_stacking = 0;
-cmci_scheduling_policy = 'random';
+fault_stacking = 1;
+cmci_scheduling_policy = 'idle-first';
 U = 1;
-M = 4;
+M = 1;
 S = 12;
 
-my_lambda_array = (1:1:20000)';
+my_lambda_array = (1:1:2000)';
 %my_lambda_array = [1; 10; 20; 50; 75; 100; 150; 200; 333; 500; 750; 1000; 1500; 2000];
 %my_tau_array = (0.001:0.001:0.010)';
 my_M_array = [1;2;4];
@@ -131,7 +134,7 @@ display 'UNIPROCESSOR/INTERACTIVE/SMI-CMCI'
 display 'Approximation 1...'
 % Parameters
 max_k = 200;
-taus = 0.125*ones(max_k,1);
+taus = 0.133*ones(max_k,1);
 my_tau = mean(taus);
 my_gamma = 0.050;
 my_lambda = 1;
@@ -146,27 +149,26 @@ for i=1:size(my_alphas,1)
     uniprocessor_interactive_smi_cmci_t_wait_avg_approx1_array(i) = compute_uniprocessor_interactive_smi_cmci_t_wait_avg_approx1(my_alphas(i),PK,t_services,max_k);
     uniprocessor_interactive_smi_cmci_t_lat_avg_approx1_array(i) = uniprocessor_interactive_smi_cmci_t_wait_avg_approx1_array(i) + uniprocessor_interactive_smi_cmci_t_service_avg_approx1;
 end
+uniprocessor_interactive_smi_cmci_t_lat_avg_approx1_array(uniprocessor_interactive_smi_cmci_t_lat_avg_approx1_array(:)<0) = NaN;
 
 figure(6);
-hold on;
-plot(my_alphas(:), uniprocessor_interactive_smi_cmci_t_lat_avg_approx1_array(:));
-plot(my_alphas(:), uniprocessor_interactive_smi_cmci_t_wait_avg_approx1_array(:));
+semilogy(my_alphas(:), uniprocessor_interactive_smi_cmci_t_lat_avg_approx1_array(:));
+%plot(my_alphas(:), uniprocessor_interactive_smi_cmci_t_wait_avg_approx1_array(:));
 
-title('Average Total Query Latency vs. QPS for Uniprocessor/Interactive/SMI-CMCI Approximation 1');
-ylabel('Average Total Query Latency (sec)');
-xlabel('Average Queries Per Second (queries/sec)');
+%title('Average Total Query Latency vs. QPS for Uniprocessor/Interactive/SMI-CMCI Approximation 1');
+ylabel('Average Total Event Latency (sec)');
+xlabel('Average Events Per Second (queries/sec)');
 %legend(['mean tau = ' num2str(my_tau) ', gamma = ' num2str(my_gamma)]);
-hold off;
 
-
+% Approximation 2: phi << rho. phi = alpha * gamma, rho = lambda * tau.
 display 'Approximation 2...'
 % Parameters
-max_k = 200;
+max_k = 300;
 max_c = 140;
 my_tau = 0.125;
 taus = my_tau * ones(max_k+1,1);
 my_gamma = 0.015;
-my_lambda = 4;
+my_lambda = 64;
 k = (0:max_k)';
 C = (1:1:140)';
 fault_stacking = 0;
@@ -213,8 +215,8 @@ zlabel('Probability');
 hold off;
 
 figure(9);
-hold on;
-plot(uniprocessor_interactive_smi_cmci_t_lat_approx2, P_t_lat_uni_approx2);
+%hold on;
+semilogx(uniprocessor_interactive_smi_cmci_t_lat_approx2, P_t_lat_uni_approx2);
 title('PMF of Application Event Latency for Uniprocessor/Interactive/SMI-CMCI Approximation 2');
 ylabel('Probability');
 xlabel('Total Latency (sec)');

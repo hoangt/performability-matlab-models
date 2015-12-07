@@ -11,7 +11,7 @@ else
         if my_lambda * my_tau_avg <= S - U*M
             I = 0;
         else
-            I = U*M*(my_lambda * my_tau_avg - (S - U*M));
+            I = (my_lambda * my_tau_avg - (S - U*M));
         end
     else
         display('This should not have happened!');
